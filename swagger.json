@@ -1,0 +1,696 @@
+{
+    "info": {
+        "description": "Documentation for the Prediction API",
+        "title": "Prediction API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/",
+            "description": "Local environment"
+        }
+    ],
+    "paths": {
+        "/predict/cafe-bazaar": {
+            "post": {
+                "tags": [
+                    "CVR ESTIM"
+                ],
+                "summary": "Get cvr es",
+                "description": "Get all cvres",
+                "requestBody": {
+                    "description": "Prediction API requestBody",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PredictRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "List of cvr est",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PredictResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "openapi": "3.0.2",
+    "components": {
+        "schemas": {
+            "Context": {
+                "type": "object",
+                "properties": {
+                    "zoneId": {
+                        "type": "integer"
+                    },
+                    "zoneType": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3,
+                        "example": 2
+                    },
+                    "dayOfWeek": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6,
+                        "example": 2
+                    },
+                    "hourOfDay": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 23,
+                        "example": 2
+                    },
+                    "device": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4,
+                        "example": 2
+                    },
+                    "contentGenre": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "contentGenre",
+                    "dayOfWeek",
+                    "device",
+                    "hourOfDay",
+                    "zoneId",
+                    "zoneType"
+                ]
+            },
+            "AppActivity": {
+                "type": "object",
+                "properties": {
+                    "lastSessionTime": {
+                        "type": "integer"
+                    },
+                    "totalDuration": {
+                        "type": "integer"
+                    },
+                    "totalDurationRecent": {
+                        "type": "integer"
+                    },
+                    "sessionCount": {
+                        "type": "integer"
+                    },
+                    "sessionCountRecent": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "lastSessionTime",
+                    "sessionCount",
+                    "sessionCountRecent",
+                    "totalDuration",
+                    "totalDurationRecent"
+                ]
+            },
+            "AppFeaturesActivity": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "appActivity": {
+                        "$ref": "#/components/schemas/AppActivity"
+                    }
+                },
+                "required": [
+                    "appActivity",
+                    "index"
+                ]
+            },
+            "AppGroupActivityFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "appActivity": {
+                        "$ref": "#/components/schemas/AppActivity"
+                    }
+                },
+                "required": [
+                    "appActivity",
+                    "index"
+                ]
+            },
+            "AppGenreActivityFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "appActivity": {
+                        "$ref": "#/components/schemas/AppActivity"
+                    }
+                },
+                "required": [
+                    "appActivity",
+                    "index"
+                ]
+            },
+            "AppHistoryActivityFeature": {
+                "type": "object",
+                "properties": {
+                    "appFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppFeaturesActivity"
+                        }
+                    },
+                    "appGroupFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppGroupActivityFeatures"
+                        }
+                    },
+                    "appGenreFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppGenreActivityFeatures"
+                        }
+                    }
+                },
+                "required": [
+                    "appFeatures",
+                    "appGenreFeatures",
+                    "appGroupFeatures"
+                ]
+            },
+            "AppFeaturesInstall": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "installations": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "installations"
+                ]
+            },
+            "AppGroupInstallFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "installations": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "installations"
+                ]
+            },
+            "AppGenreInstallFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "installations": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "installations"
+                ]
+            },
+            "AppHistoryInstallFeature": {
+                "type": "object",
+                "properties": {
+                    "appFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppFeaturesInstall"
+                        }
+                    },
+                    "appGroupFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppGroupInstallFeatures"
+                        }
+                    },
+                    "appGenreFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AppGenreInstallFeatures"
+                        }
+                    }
+                },
+                "required": [
+                    "appFeatures",
+                    "appGenreFeatures",
+                    "appGroupFeatures"
+                ]
+            },
+            "Impressions": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "recentCount": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "lastTime",
+                    "recentCount"
+                ]
+            },
+            "Clicks": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "recentCount": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "lastTime",
+                    "recentCount"
+                ]
+            },
+            "Installs": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "recentCount": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "lastTime",
+                    "recentCount"
+                ]
+            },
+            "BannerActivity": {
+                "type": "object",
+                "properties": {
+                    "impressions": {
+                        "$ref": "#/components/schemas/Impressions"
+                    },
+                    "clicks": {
+                        "$ref": "#/components/schemas/Clicks"
+                    },
+                    "installs": {
+                        "$ref": "#/components/schemas/Installs"
+                    }
+                },
+                "required": [
+                    "clicks",
+                    "impressions",
+                    "installs"
+                ]
+            },
+            "VideoActivity": {
+                "type": "object",
+                "properties": {
+                    "impressions": {
+                        "$ref": "#/components/schemas/Impressions"
+                    },
+                    "clicks": {
+                        "$ref": "#/components/schemas/Clicks"
+                    },
+                    "installs": {
+                        "$ref": "#/components/schemas/Installs"
+                    }
+                },
+                "required": [
+                    "clicks",
+                    "impressions",
+                    "installs"
+                ]
+            },
+            "SearchActivity": {
+                "type": "object",
+                "properties": {
+                    "impressions": {
+                        "$ref": "#/components/schemas/Impressions"
+                    },
+                    "clicks": {
+                        "$ref": "#/components/schemas/Clicks"
+                    },
+                    "installs": {
+                        "$ref": "#/components/schemas/Installs"
+                    }
+                },
+                "required": [
+                    "clicks",
+                    "impressions",
+                    "installs"
+                ]
+            },
+            "AdFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "bannerActivity": {
+                        "$ref": "#/components/schemas/BannerActivity"
+                    },
+                    "videoActivity": {
+                        "$ref": "#/components/schemas/VideoActivity"
+                    },
+                    "searchActivity": {
+                        "$ref": "#/components/schemas/SearchActivity"
+                    }
+                },
+                "required": [
+                    "bannerActivity",
+                    "index",
+                    "searchActivity",
+                    "videoActivity"
+                ]
+            },
+            "AdGroupFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "bannerActivity": {
+                        "$ref": "#/components/schemas/BannerActivity"
+                    },
+                    "videoActivity": {
+                        "$ref": "#/components/schemas/VideoActivity"
+                    },
+                    "searchActivity": {
+                        "$ref": "#/components/schemas/SearchActivity"
+                    }
+                },
+                "required": [
+                    "bannerActivity",
+                    "index",
+                    "searchActivity",
+                    "videoActivity"
+                ]
+            },
+            "AdGenreFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "bannerActivity": {
+                        "$ref": "#/components/schemas/BannerActivity"
+                    },
+                    "videoActivity": {
+                        "$ref": "#/components/schemas/VideoActivity"
+                    },
+                    "searchActivity": {
+                        "$ref": "#/components/schemas/SearchActivity"
+                    }
+                },
+                "required": [
+                    "bannerActivity",
+                    "index",
+                    "searchActivity",
+                    "videoActivity"
+                ]
+            },
+            "AdHistoryFeature": {
+                "type": "object",
+                "properties": {
+                    "adFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdFeatures"
+                        }
+                    },
+                    "adGroupFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdGroupFeatures"
+                        }
+                    },
+                    "adGenreFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdGenreFeatures"
+                        }
+                    }
+                },
+                "required": [
+                    "adFeatures",
+                    "adGenreFeatures",
+                    "adGroupFeatures"
+                ]
+            },
+            "BaseSearchCount": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "searchCount": {
+                        "type": "integer"
+                    },
+                    "searchCountRecent": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "lastTime",
+                    "searchCount",
+                    "searchCountRecent"
+                ]
+            },
+            "QueryGroupFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "searchCount": {
+                        "type": "integer"
+                    },
+                    "searchCountRecent": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "lastTime",
+                    "searchCount",
+                    "searchCountRecent"
+                ]
+            },
+            "QueryGenreFeatures": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "searchCount": {
+                        "type": "integer"
+                    },
+                    "searchCountRecent": {
+                        "type": "integer"
+                    },
+                    "lastTime": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "lastTime",
+                    "searchCount",
+                    "searchCountRecent"
+                ]
+            },
+            "SearchHistoryFeature": {
+                "type": "object",
+                "properties": {
+                    "queryFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BaseSearchCount"
+                        }
+                    },
+                    "queryGroupFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/QueryGroupFeatures"
+                        }
+                    },
+                    "queryGenreFeatures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/QueryGenreFeatures"
+                        }
+                    }
+                },
+                "required": [
+                    "queryFeatures",
+                    "queryGenreFeatures",
+                    "queryGroupFeatures"
+                ]
+            },
+            "UserProfile": {
+                "type": "object",
+                "properties": {
+                    "appHistoryActivityFeature": {
+                        "$ref": "#/components/schemas/AppHistoryActivityFeature"
+                    },
+                    "appHistoryInstallFeature": {
+                        "$ref": "#/components/schemas/AppHistoryInstallFeature"
+                    },
+                    "adHistoryFeature": {
+                        "$ref": "#/components/schemas/AdHistoryFeature"
+                    },
+                    "searchHistoryFeature": {
+                        "$ref": "#/components/schemas/SearchHistoryFeature"
+                    }
+                },
+                "required": [
+                    "adHistoryFeature",
+                    "appHistoryActivityFeature",
+                    "appHistoryInstallFeature",
+                    "searchHistoryFeature"
+                ]
+            },
+            "PredictInputData": {
+                "type": "object",
+                "properties": {
+                    "userPegahId": {
+                        "type": "string"
+                    },
+                    "context": {
+                        "$ref": "#/components/schemas/Context"
+                    },
+                    "userProfile": {
+                        "$ref": "#/components/schemas/UserProfile"
+                    }
+                },
+                "required": [
+                    "context",
+                    "userProfile"
+                ]
+            },
+            "CreativeFuture": {
+                "type": "object",
+                "properties": {
+                    "creativeId": {
+                        "type": "integer"
+                    },
+                    "creativeIdIndex": {
+                        "type": "integer"
+                    },
+                    "adPackageName": {
+                        "type": "integer"
+                    },
+                    "adGenre": {
+                        "type": "integer"
+                    },
+                    "adGroup": {
+                        "type": "integer"
+                    },
+                    "incomeType": {
+                        "type": "integer"
+                    },
+                    "bidType": {
+                        "type": "integer"
+                    },
+                    "trendWeighted": {
+                        "type": "integer"
+                    },
+                    "growthWeighted": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "adGenre",
+                    "adGroup",
+                    "adPackageName",
+                    "bidType",
+                    "creativeId",
+                    "creativeIdIndex",
+                    "growthWeighted",
+                    "incomeType",
+                    "trendWeighted"
+                ]
+            },
+            "PredictRequest": {
+                "type": "object",
+                "properties": {
+                    "request": {
+                        "$ref": "#/components/schemas/PredictInputData"
+                    },
+                    "creatives": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreativeFuture"
+                        }
+                    }
+                },
+                "required": [
+                    "creatives",
+                    "request"
+                ]
+            },
+            "PredictResponse": {
+                "type": "object",
+                "properties": {
+                    "creativeId": {
+                        "type": "integer"
+                    },
+                    "cvr": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "creativeId",
+                    "cvr"
+                ]
+            }
+        }
+    }
+}
